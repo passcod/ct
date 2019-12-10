@@ -20,7 +20,7 @@ addons:
 
 env:
   global:
-    - PROJECT_NAME=cargo-watch
+    - PROJECT_NAME=ct
 
 matrix:
   fast_finish: true
