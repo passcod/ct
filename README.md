@@ -43,7 +43,7 @@ Passed nothing, it lists the working directory:
 
 ```bash
 $ ct
-bin  Cargo.toml  README.md  target  Cargo.lock  Cargo.toml  src
+bin  README.md  target  Cargo.lock  Cargo.toml  src
 ```
 
 Passed multiple arguments, it acts on each in turn:
