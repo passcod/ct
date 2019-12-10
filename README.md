@@ -20,7 +20,7 @@ Pre-built binaries are available [on the Github Releases tab](https://github.com
 From source:
 
 ```bash
-$ cargo install --force --git https://github.com/passcod/ct
+$ cargo install --force --git https://github.com/passcod/ct --branch main
 ```
 
 Or clone and build with `$ cargo build --release` then place in your $PATH.
