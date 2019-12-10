@@ -1,0 +1,58 @@
+language: rust
+rust: stable
+dist: xenial
+
+cache:
+  - directories:
+    - $HOME/.cargo
+    - target/release/deps
+    - target/$TARGET/release/deps
+before_cache:
+  # Travis can't cache files that are not readable by "others"
+  - chmod -R a+r $HOME/.cargo
+
+addons:
+  apt:
+    packages:
+      - fakeroot
+      - musl-dev
+      - musl-tools
+
+env:
+  global:
+    - PROJECT_NAME=cargo-watch
+
+matrix:
+  fast_finish: true
+  include:
+    - os: osx
+      env: TARGET=x86_64-apple-darwin
+    - os: linux
+      env: TARGET=x86_64-unknown-linux-gnu
+    - os: linux
+      env: TARGET=x86_64-unknown-linux-musl
+
+    # Not yet
+    #- os: windows
+    #  env: TARGET=x86_64-pc-windows-msvc
+    #- os: windows
+    #  env: TARGET=x86_64-pc-windows-gnu
+
+before_script: rustup target add $TARGET || true
+script:
+  - cargo check --release --target $TARGET
+  - cargo build --release --target $TARGET
+  - cargo run --release --target $TARGET
+  - cargo run --release --target $TARGET -- Cargo.toml .
+before_deploy: bin/package $TRAVIS_TAG $TARGET
+deploy:
+  provider: releases
+  api_key:
+    secure: OSHscfRK8Iqb+WPcrCBYAPtTBK55wt2siyJmiznDGKu73WPyU2uNfePgLMGGtdw45Lc/WGMGicqd6UsElG3rip5oJTlqS6ZV44S3KooLX3ZRxx3kYyf8xVRfB4r6MQhmhhM5u5kjH7T1055cemMGQBDVKhNQK2h3KMDqfA4zkAiXhPQePMB8RH8BKmCT1qOlzLBhU8N57X70c7DhbNQp9x3HOxeGWZeZxf/7LecWqo52m/wCFseY00YEWkU3TJoXfpJr900Rt5Y5eLc/jB1f9aMLo1YiMSGDVP8NgzYsGBQoq+ykJL7V2boIIn7ELzd60IvbJIkJRQGezde0JDFaaTrlEsvYvVLgpLcY64DQi0fnFhAHfo8ovfWkPcqA6b/ODqDOqDK+wThOERsPf/zK54w9CY89F5RPoZHSbGeELmIgg4RdGSgKh/CkzcvWxCnlWoR1HJXjftZnAGfxKHsVtyh+6crwdiDk545+Yoxiyr8OlHA49cECYqRDEbsDozFuqlT6IXAGWqJk9k2VYTFRV4oTum92xIn6o/bo2tZq26ZMJhRtIp9Z/QY92OA1ZmeveIWLv978cbh4ffS4sWxSWwkobfCyXr3SFBMaXCH4NkmyuLxKONkPVvQ/EBsI7fdfUJdxzVP+QdgaI72K/Z2yzlmiwYHeE5y3TnNt5OZ/Ai8=
+  file_glob: true
+  file: ${PROJECT_NAME}-${TRAVIS_TAG}-${TARGET}.*
+  skip_cleanup: true
+  on:
+    repo: passcod/ct
+    tags: true
+    rust: stable

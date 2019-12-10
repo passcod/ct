@@ -1,0 +1,25 @@
+[package]
+name = "ct"
+version = "1.0.0"
+edition = "2018"
+
+authors = ["Félix Saparelli <felix@passcod.name>"]
+categories = ["command-line-utilities"]
+description = "Cats files, lists dirs"
+homepage = "https://github.com/passcod/ct"
+keywords = ["ls", "exa", "cat", "listing"]
+license = "CC0-1.0"
+readme = "README.md"
+repository = "https://github.com/passcod/ct"
+
+[badges]
+travis-ci = { repository = "passcod/ct" }
+maintenance = { status = "passively-maintained" }
+
+[profile.release]
+lto = true
+panic = "abort"
+codegen-units = 1
+
+[dependencies]
+exa = "0.9.0"
