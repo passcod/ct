@@ -1,7 +1,7 @@
 # $ ct
 
 [![Release version](https://flat.badgen.net/github/release/passcod/ct/stable)](https://github.com/passcod/ct/releases)
-[![License: Artistic 2.0](https://flat.badgen.net/github/license/passcod/ct)](./LICENSE)
+[![License: MIT](https://flat.badgen.net/github/license/passcod/ct)](./LICENSE)
 [![Build status](https://flat.badgen.net/travis/passcod/ct/main)](https://travis-ci.com/passcod/ct)
 ![MSRV: none aka latest stable](https://flat.badgen.net/badge/MSRV/latest%20stable/purple)
 ![MSRV policy: bump is non-breaking](https://flat.badgen.net/badge/MSRV%20policy/non-breaking/orange)
