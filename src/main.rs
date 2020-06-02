@@ -2,7 +2,7 @@ use exa::Exa;
 use std::env::args_os;
 use std::ffi::OsString;
 use std::fs::File;
-use std::io::{stdout, BufRead, BufReader};
+use std::io::{stdout, BufRead, BufReader, Write};
 use std::iter::once;
 use std::path::PathBuf;
 use std::process::exit;
@@ -34,7 +34,33 @@ fn main() {
         let path = PathBuf::from(p.clone());
         let name = path.display();
 
-        if path.is_dir() {
+        if path.is_file() {
+            let file = match File::open(&path) {
+                Err(err) => {
+                    eprintln!("failed to open file: {}\n{}", name, err);
+                    continue;
+                }
+                Ok(f) => f,
+            };
+
+            if last != 0 {
+                println!("=> {} <=", name);
+            }
+
+            let mut buffered = BufReader::new(file);
+            loop {
+                let mut line = Vec::new();
+                if buffered
+                    .read_until(0xA, &mut line)
+                    .expect("error reading file")
+                    > 0
+                {
+                    stdout().write(&line).expect("error writing");
+                } else {
+                    break;
+                }
+            }
+        } else {
             let opts = options.clone().chain(once(&p));
             match Exa::from_args(opts, &mut stdout()) {
                 Err(err) => {
@@ -54,28 +80,6 @@ fn main() {
                     }
                 }
             }
-        } else if path.is_file() {
-            let file = match File::open(&path) {
-                Err(err) => {
-                    eprintln!("failed to open file: {}\n{}", name, err);
-                    continue;
-                }
-                Ok(f) => f,
-            };
-
-            if last != 0 {
-                println!("=> {} <=", name);
-            }
-
-            for line in BufReader::new(file).lines() {
-                println!(
-                    "{}",
-                    line.unwrap_or_else(|err| format!("non-utf8 line skipped in {}: {}", name, err))
-                );
-            }
-        } else {
-            eprintln!("not a dir or regular file: {}", path.display());
-            code = 1;
         }
 
         if i != last {
